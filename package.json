@@ -2,11 +2,9 @@
   "name": "solana-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "app.mjs",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sync": "npm install && npm ci"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +12,7 @@
   "dependencies": {
     "@solana/pay": "^0.2.5",
     "@solana/spl-token": "^0.3.8",
-    "@solana/web3.js": "^1.88.0",
+    "@solana/web3.js": "^1.78.0",
     "axios": "^1.4.0",
     "bignumber.js": "^9.1.1",
     "body-parser": "^1.20.2",
