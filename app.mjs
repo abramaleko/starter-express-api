@@ -126,7 +126,7 @@ app.post('/api/merchant',async(request,response)=>{
             }
     }, 30000);
 
-   }
+   });
 
 }
 });
