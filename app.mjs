@@ -86,16 +86,22 @@ app.post('/api/merchant',async(request,response)=>{
         const message = 'Your swaping tokens for your in-game points';
   
         response.status(200).send({ transaction: base64Transaction, message });
+  
+ } catch (error) {
+  // Log the error details for debugging
+  console.error('An error occurred during the API request:', error.message);
+  console.error('Error stack trace:', error.stack);
+ }
+   finally {
+  console.log('reference:',referencePublic);
+   const  signature  = await new Promise((resolve, reject) => {
+    const interval = setInterval(async () => {
+          console.count('Checking for transaction...');
+            try {
+                signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+                console.log('\n 🖌  Signature found: ', signatureInfo.signature);
 
-     console.log('reference:',referencePublic);
- if (referencePublic) { //if reference found
-  const interval = setInterval(async () => {
-    console.count('Checking for transaction...');
-    try {
-        signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-        console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-       
-            // Create an object with the data you want to send
+               // Create an object with the data you want to send
             const postData = {
               user_email:userSender,
               amount: sendAmount,
@@ -108,21 +114,21 @@ app.post('/api/merchant',async(request,response)=>{
             const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
             // Handle the response from the server
             console.log(apiResponse.data);
-            clearInterval(interval);
-    } catch (error) {
-        if (!(error instanceof FindReferenceError)) {
-            console.error(error);
-            clearInterval(interval);
-        }
-    }
-  }, 30000);
- }
-  
- } catch (error) {
-  // Log the error details for debugging
-  console.error('An error occurred during the API request:', error.message);
-  console.error('Error stack trace:', error.stack);
- }
+              
+                clearInterval(interval);
+                resolve(signatureInfo);
+            } catch (error: any) {
+                if (!(error instanceof FindReferenceError)) {
+                    console.error(error);
+                    clearInterval(interval);
+                    reject(error);
+                }
+            }
+    }, 30000);
+
+   }
+
+}
 });
 
 
