@@ -86,18 +86,12 @@ app.post('/api/merchant',async(request,response)=>{
         const message = 'Your swaping tokens for your in-game points';
   
         response.status(200).send({ transaction: base64Transaction, message });
-  
- } catch (error) {
-  // Log the error details for debugging
-  console.error('An error occurred during the API request:', error.message);
-  console.error('Error stack trace:', error.stack);
- }
- finally {
-  console.log('reference:',referencePublic);
+
+     console.log('reference:',referencePublic);
  if (referencePublic) { //if reference found
   const interval = setInterval(async () => {
     console.count('Checking for transaction...');
-    // try {
+    try {
         signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
         console.log('\n 🖌  Signature found: ', signatureInfo.signature);
        
@@ -115,15 +109,20 @@ app.post('/api/merchant',async(request,response)=>{
             // Handle the response from the server
             console.log(apiResponse.data);
             clearInterval(interval);
-    // } catch (error) {
+    } catch (error) {
         if (!(error instanceof FindReferenceError)) {
             console.error(error);
             clearInterval(interval);
-         }
-    // }
-  }, 50000);
+        }
+    }
+  }, 30000);
  }
-}
+  
+ } catch (error) {
+  // Log the error details for debugging
+  console.error('An error occurred during the API request:', error.message);
+  console.error('Error stack trace:', error.stack);
+ }
 });
 
 
