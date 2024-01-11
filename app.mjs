@@ -117,7 +117,7 @@ app.post('/api/merchant',async(request,response)=>{
               
                 clearInterval(interval);
                 resolve(signatureInfo);
-            } catch (error: any) {
+            } catch (error) {
                 if (!(error instanceof FindReferenceError)) {
                     console.error(error);
                     clearInterval(interval);
