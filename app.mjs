@@ -22,7 +22,7 @@ app.listen(port, () => {
 app.get('/api/merchant', (req, res) => {
   
     const label = ' CAYC SWAP ';
-    const icon = 'https://github.com/UnrealKingdoms/public/blob/996bf1ec127402a2d28d40c28a832259bdcfcb01/icon.png?raw=true';
+    const icon = 'https://raw.githubusercontent.com/UnrealKingdoms/CAYCIMSSOL/main/icon.png?token=GHSAT0AAAAAAB4B3TGXAVZOATDQZDY7TDVQZM7ZZOA';
   
     res.status(200).json({
       label,
