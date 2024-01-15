@@ -95,9 +95,10 @@ app.post('/api/merchant',async(request,response)=>{
  finally {
   console.log('reference:',referencePublic);
  if (referencePublic) { //if reference found
+  console.log('reference found')
   const interval = setInterval(async () => {
     console.count('Checking for transaction...');
-    try {
+    // try {
         signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
         if (signatureInfo.signature) {
           console.log('\n 🖌  Signature found: ', signatureInfo.signature);
@@ -117,12 +118,13 @@ app.post('/api/merchant',async(request,response)=>{
           console.log(apiResponse.data);
           clearInterval(interval);
         }
-    } catch (error) {
-        if (!(error instanceof FindReferenceError)) {
-            console.error(error);
-            clearInterval(interval);
-        }
-    }
+    // } 
+    // catch (error) {
+    //     if (!(error instanceof FindReferenceError)) {
+    //         console.error(error);
+    //         clearInterval(interval);
+    //     }
+    // }
   }, 30000);
  }
 }
