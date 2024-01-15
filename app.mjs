@@ -22,7 +22,7 @@ app.listen(port, () => {
 app.get('/api/merchant', (req, res) => {
   
     const label = ' CAYC SWAP ';
-    const icon = 'https://raw.githubusercontent.com/UnrealKingdoms/CAYCIMSSOL/main/icon.png?token=GHSAT0AAAAAAB4B3TGXAVZOATDQZDY7TDVQZM7ZZOA';
+    const icon = 'https://github.com/UnrealKingdoms/public/blob/996bf1ec127402a2d28d40c28a832259bdcfcb01/icon.png?raw=true';
   
     res.status(200).json({
       label,
@@ -92,16 +92,16 @@ app.post('/api/merchant',async(request,response)=>{
   console.error('An error occurred during the API request:', error.message);
   console.error('Error stack trace:', error.stack);
  }
-   finally {
+ finally {
   console.log('reference:',referencePublic);
-   const  signature  = await new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
-          console.count('Checking for transaction...');
-            try {
-                signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-                console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-
-               // Create an object with the data you want to send
+ if (referencePublic) { //if reference found
+  const interval = setInterval(async () => {
+    console.count('Checking for transaction...');
+    try {
+        signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+        console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+       
+            // Create an object with the data you want to send
             const postData = {
               user_email:userSender,
               amount: sendAmount,
@@ -114,20 +114,15 @@ app.post('/api/merchant',async(request,response)=>{
             const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
             // Handle the response from the server
             console.log(apiResponse.data);
-              
-                clearInterval(interval);
-                resolve(signatureInfo);
-            } catch (error) {
-                if (!(error instanceof FindReferenceError)) {
-                    console.error(error);
-                    clearInterval(interval);
-                    reject(error);
-                }
-            }
-    }, 30000);
-
-   });
-
+            clearInterval(interval);
+    } catch (error) {
+        if (!(error instanceof FindReferenceError)) {
+            console.error(error);
+            clearInterval(interval);
+        }
+    }
+  }, 30000);
+ }
 }
 });
 
