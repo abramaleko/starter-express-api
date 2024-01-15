@@ -31,7 +31,6 @@ app.get('/api/merchant', (req, res) => {
 });
 
 const MERCHANT_WALLET = new PublicKey("EmPnKvMjNLFyPTx5kau2U41JXqD9qUXKY3Qig8hvz5Ek");
-const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 const tokenAddress=new PublicKey("9jDpKzpHz6fatL8CiJjRhAGsLJmLMzXvynwxY5y7ykKF");
 const tokenApi='SSTpPeZX3YagFrWTk1qvQ308q7cOUsKkiuAx4o5qTc3frZ9WCmqd0KH0wDVMzt2JHWbLfvoYCQkJX8A81AIttExli8DvYZa88I7a5eZ3SDaFUvtTxc7UzW5qpat1GLgiL3YpbS1ZCAL9Oh';
 
@@ -43,6 +42,7 @@ let userSender;
 
 
 app.post('/api/merchant',async(request,response)=>{
+  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
  try {
      // Account provided in the transaction request body by the wallet.
@@ -190,6 +190,7 @@ async function createTokenTransferIx(sender,connection,amount){
 app.get('/api/confirm-transaction',async(req,res)=>{
 
   const { transaction_id,amount,token } = req.query;
+  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
   let confirmed=false;
 
