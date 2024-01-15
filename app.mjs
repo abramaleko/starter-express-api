@@ -109,11 +109,11 @@ app.post('/api/merchant',async(request,response)=>{
               token: tokenApi
             };
             
-           const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-            const agent = new https.Agent({ rejectUnauthorized: false });
-            const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-            // Handle the response from the server
-            console.log(apiResponse.data);
+           // const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+           //  const agent = new https.Agent({ rejectUnauthorized: false });
+           //  const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+           //  // Handle the response from the server
+           //  console.log(apiResponse.data);
             clearInterval(interval);
     } catch (error) {
         if (!(error instanceof FindReferenceError)) {
