@@ -121,7 +121,13 @@ app.post('/api/merchant',async(request,response)=>{
             clearInterval(interval);
         }
     }
-  }, 30000);
+  }, 45000);
+     // Timeout mechanism after 5 minutes
+    setTimeout(() => {
+      console.error('Timeout: Transaction confirmation not found within 5 minutes.');
+      clearInterval(interval);
+      // Optionally, handle the timeout gracefully (e.g., inform the user)
+    }, 300000);
  }
 }
 });
