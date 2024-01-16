@@ -87,9 +87,12 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message });
 
+           console.log('sent response');
+
          // Start confirming the transaction in the background
     const confirmationResult = await confirmTransaction(referencePublic,connection);
-    
+        console.log(confirmationResult);
+
     if (confirmationResult.successful) {
       // Transaction confirmed, proceed with successful actions
       console.log('success transaction');
