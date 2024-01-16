@@ -42,7 +42,6 @@ let userSender;
 
 
 app.post('/api/merchant',async(request,response)=>{
-const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
  try {
      // Account provided in the transaction request body by the wallet.
@@ -88,16 +87,16 @@ const connection = new Connection('https://api.mainnet-beta.solana.com', 'confir
         response.status(200).send({ transaction: base64Transaction, message });
 
          // Start confirming the transaction in the background
-    const confirmationResult = await confirmTransaction(referencePublic);
-
+    const confirmationResult = await confirmTransaction(referencePublic,connection);
+    
     if (confirmationResult.successful) {
       // Transaction confirmed, proceed with successful actions
-      // ...
       console.log('success transaction');
+      // ...
     } else {
       // Transaction not confirmed, handle accordingly
-      // ...
-        console.erro('Failed transaction');
+      console.log('failed transaction');
+
     }
   
  } catch (error) {
@@ -107,11 +106,12 @@ const connection = new Connection('https://api.mainnet-beta.solana.com', 'confir
  }
 });
 
-async function confirmTransaction(reference) {
+async function confirmTransaction(reference,connection) {
   const transactionSignature = await new Promise((resolve, reject) => {
     const confirmationInterval = setInterval(async () => {
       const signature = await connection.getSignaturesForAddress(reference);
       if (signature) {
+        console.log(signature);
         clearInterval(confirmationInterval);
         resolve({ successful: true });
       }
@@ -121,11 +121,12 @@ async function confirmTransaction(reference) {
     setTimeout(() => {
       clearInterval(confirmationInterval);
       reject(new Error('Transaction confirmation timed out'));
-    }, 30000); // Adjust timeout as needed
+    }, 120000); // Adjust timeout as needed
   });
 
   return { successful: !!transactionSignature };
 }
+
 
 async function createTokenTransferIx(sender,connection,amount){
 
