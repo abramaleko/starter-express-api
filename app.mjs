@@ -94,8 +94,6 @@ app.post('/api/merchant',async(request,response)=>{
  }
  // finally {
   console.log('reference:',referencePublic);
- if (referencePublic) { //if reference found
-  console.log('reference found')
   const interval = setInterval( () => {
     console.count('Checking for transaction...');
     // try {
@@ -126,7 +124,6 @@ app.post('/api/merchant',async(request,response)=>{
     //     }
     // }
   }, 30000);
- }
 // }
 });
 
