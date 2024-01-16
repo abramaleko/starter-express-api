@@ -123,7 +123,7 @@ app.post('/api/merchant',async(request,response)=>{
     //         clearInterval(interval);
     //     }
     // }
-  }, 30000);
+  }, 500);
 // }
 });
 
