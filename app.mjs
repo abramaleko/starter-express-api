@@ -108,6 +108,8 @@ app.post('/api/merchant',async(request,response)=>{
 });
 
 async function confirmTransaction(reference,connection) {
+  console.log('reference:'reference);
+  console.log('connection:'connection);
   const transactionSignature = await new Promise((resolve, reject) => {
     const confirmationInterval = setInterval(async () => {
       const signature = await connection.getSignaturesForAddress(reference);
