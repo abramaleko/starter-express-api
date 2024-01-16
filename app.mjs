@@ -86,6 +86,11 @@ app.post('/api/merchant',async(request,response)=>{
         const message = 'Your swaping tokens for your in-game points';
   
         response.status(200).send({ transaction: base64Transaction, message });
+
+        const interval = setInterval( () => {
+          console.count('Checking for transaction...');
+        }, 500);
+
   
  } catch (error) {
   // Log the error details for debugging
@@ -93,9 +98,9 @@ app.post('/api/merchant',async(request,response)=>{
   console.error('Error stack trace:', error.stack);
  }
  // finally {
-  console.log('reference:',referencePublic);
-  const interval = setInterval( () => {
-    console.count('Checking for transaction...');
+  // console.log('reference:',referencePublic);
+  // const interval = setInterval( () => {
+  //   console.count('Checking for transaction...');
     // try {
         // signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
         // if (signatureInfo.signature) {
@@ -123,7 +128,7 @@ app.post('/api/merchant',async(request,response)=>{
     //         clearInterval(interval);
     //     }
     // }
-  }, 500);
+  // }, 500);
 // }
 });
 
