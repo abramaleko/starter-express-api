@@ -112,7 +112,6 @@ app.post('/api/merchant',async(request,response)=>{
 
 async function confirmTransaction(reference,connection) {
    console.error('reference:', reference);
-   console.error('connection:', connection);
   const transactionSignature = await new Promise((resolve, reject) => {
     const confirmationInterval = setInterval(async () => {
       const signature = await connection.getSignaturesForAddress(reference);
