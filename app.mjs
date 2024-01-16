@@ -42,6 +42,7 @@ let userSender;
 
 
 app.post('/api/merchant',async(request,response)=>{
+const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
  try {
      // Account provided in the transaction request body by the wallet.
