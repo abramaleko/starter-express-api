@@ -42,7 +42,6 @@ let userSender;
 
 
 app.post('/api/merchant',async(request,response)=>{
-  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
  try {
      // Account provided in the transaction request body by the wallet.
@@ -87,51 +86,45 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message });
 
-        const interval = setInterval( () => {
-          console.count('Checking for transaction...');
-        }, 500);
+         // Start confirming the transaction in the background
+    const confirmationResult = await confirmTransaction(referencePublic);
 
+    if (confirmationResult.successful) {
+      // Transaction confirmed, proceed with successful actions
+      // ...
+      console.log('success transaction');
+    } else {
+      // Transaction not confirmed, handle accordingly
+      // ...
+        console.erro('Failed transaction');
+    }
   
  } catch (error) {
   // Log the error details for debugging
   console.error('An error occurred during the API request:', error.message);
   console.error('Error stack trace:', error.stack);
  }
- // finally {
-  // console.log('reference:',referencePublic);
-  // const interval = setInterval( () => {
-  //   console.count('Checking for transaction...');
-    // try {
-        // signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-        // if (signatureInfo.signature) {
-        //   console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-       
-        //   // Create an object with the data you want to send
-        //   const postData = {
-        //     user_email:userSender,
-        //     amount: sendAmount,
-        //     transaction_id: signatureInfo.signature,
-        //     token: tokenApi
-        //   };
-          
-        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-        //   const agent = new https.Agent({ rejectUnauthorized: false });
-        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-        //   // Handle the response from the server
-        //   console.log(apiResponse.data);
-        //   clearInterval(interval);
-        // }
-    // } 
-    // catch (error) {
-    //     if (!(error instanceof FindReferenceError)) {
-    //         console.error(error);
-    //         clearInterval(interval);
-    //     }
-    // }
-  // }, 500);
-// }
 });
 
+async function confirmTransaction(reference) {
+  const transactionSignature = await new Promise((resolve, reject) => {
+    const confirmationInterval = setInterval(async () => {
+      const signature = await connection.getSignaturesForAddress(reference);
+      if (signature) {
+        clearInterval(confirmationInterval);
+        resolve({ successful: true });
+      }
+    }, 1000); // Check every second
+
+    // Set a timeout in case confirmation takes too long
+    setTimeout(() => {
+      clearInterval(confirmationInterval);
+      reject(new Error('Transaction confirmation timed out'));
+    }, 30000); // Adjust timeout as needed
+  });
+
+  return { successful: !!transactionSignature };
+}
 
 async function createTokenTransferIx(sender,connection,amount){
 
