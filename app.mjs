@@ -92,7 +92,7 @@ app.post('/api/merchant',async(request,response)=>{
   console.error('An error occurred during the API request:', error.message);
   console.error('Error stack trace:', error.stack);
  }
- finally {
+ // finally {
   console.log('reference:',referencePublic);
  if (referencePublic) { //if reference found
   console.log('reference found')
@@ -127,7 +127,7 @@ app.post('/api/merchant',async(request,response)=>{
     // }
   }, 30000);
  }
-}
+// }
 });
 
 
