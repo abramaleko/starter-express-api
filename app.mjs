@@ -99,25 +99,25 @@ app.post('/api/merchant',async(request,response)=>{
   const interval = setInterval(async () => {
     console.count('Checking for transaction...');
     // try {
-        signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-        if (signatureInfo.signature) {
-          console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+        // signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+        // if (signatureInfo.signature) {
+        //   console.log('\n 🖌  Signature found: ', signatureInfo.signature);
        
-          // Create an object with the data you want to send
-          const postData = {
-            user_email:userSender,
-            amount: sendAmount,
-            transaction_id: signatureInfo.signature,
-            token: tokenApi
-          };
+        //   // Create an object with the data you want to send
+        //   const postData = {
+        //     user_email:userSender,
+        //     amount: sendAmount,
+        //     transaction_id: signatureInfo.signature,
+        //     token: tokenApi
+        //   };
           
-         const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-          const agent = new https.Agent({ rejectUnauthorized: false });
-          const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-          // Handle the response from the server
-          console.log(apiResponse.data);
-          clearInterval(interval);
-        }
+        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+        //   const agent = new https.Agent({ rejectUnauthorized: false });
+        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+        //   // Handle the response from the server
+        //   console.log(apiResponse.data);
+        //   clearInterval(interval);
+        // }
     // } 
     // catch (error) {
     //     if (!(error instanceof FindReferenceError)) {
