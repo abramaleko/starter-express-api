@@ -87,19 +87,23 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message });
 
-         // Wait for the transaction to be confirmed
-      const confirmation = await connection.confirmTransaction(base64Transaction, 'confirmed');
-      if (!confirmation.value.err) {
-        console.log('Transaction was successful');
-      } else {
-        console.error('Transaction failed:', confirmation.value.err);
-      }
-      
-      // Check the transaction status
-      const signatureStatuses = await connection.getSignatureStatuses([base64Transaction]);
-      if (signatureStatuses && signatureStatuses.value[0] && signatureStatuses.value[0].err) {
-        console.error('Transaction error:', signatureStatuses.value[0].err);
-      }
+        // Get the transaction signature from the request body
+    const transactionSignature = request.body.transactionSignature;
+    if (!transactionSignature) throw new Error('missing transaction signature');
+
+    // Wait for the transaction to be confirmed
+    const confirmation = await connection.confirmTransaction(transactionSignature, 'confirmed');
+    if (!confirmation.value.err) {
+      console.log('Transaction was successful');
+    } else {
+      console.error('Transaction failed:', confirmation.value.err);
+    }
+
+    // Check the transaction status
+    const signatureStatuses = await connection.getSignatureStatuses([transactionSignature]);
+    if (signatureStatuses && signatureStatuses.value[0] && signatureStatuses.value[0].err) {
+      console.error('Transaction error:', signatureStatuses.value[0].err);
+    }
   
  } catch (error) {
   // Log the error details for debugging
