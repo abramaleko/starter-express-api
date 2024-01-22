@@ -264,7 +264,7 @@ app.post('/api/check', async function(req, res) {
                 reject(error);
             }
         }
-    }, 250);
+    }, 5000);
 });
  
 })
