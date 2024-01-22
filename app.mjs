@@ -234,7 +234,7 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 });
 
 
-app.get('/api/check/:reference', function (req, res) {
+app.get('/api/check/:reference', async function (req, res) {
   let referencePublic=req.params.reference;
 
   const interval = setInterval(async () => {
