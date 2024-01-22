@@ -32,8 +32,7 @@ app.get('/api/merchant', (req, res) => {
 });
 
 const MERCHANT_WALLET = new PublicKey("EmPnKvMjNLFyPTx5kau2U41JXqD9qUXKY3Qig8hvz5Ek");
-// const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
-const connection = new Connection('https://api.devnet.solana.com');
+ const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 const tokenAddress=new PublicKey("9jDpKzpHz6fatL8CiJjRhAGsLJmLMzXvynwxY5y7ykKF");
 const tokenApi='SSTpPeZX3YagFrWTk1qvQ308q7cOUsKkiuAx4o5qTc3frZ9WCmqd0KH0wDVMzt2JHWbLfvoYCQkJX8A81AIttExli8DvYZa88I7a5eZ3SDaFUvtTxc7UzW5qpat1GLgiL3YpbS1ZCAL9Oh';
 
@@ -68,15 +67,8 @@ app.post('/api/merchant',async(request,response)=>{
      const sender = new PublicKey(accountField);
   
    // create  transfer instruction
-      // const tokenTransferIx = await createTokenTransferIx(sender, connection,amount);
-      referencePublic=uuidv4();;
-      const tokenTransferIx= SystemProgram.transfer({
-        fromPubkey: sender,
-        toPubkey: new PublicKey("CVmz887tvi36wB2Jw7aYAHfenB2KJk5MHgaNV6xEjpEr"),
-        lamports: 133700000,
-        memo : referencePublic,
-      });
-  
+       const tokenTransferIx = await createTokenTransferIx(sender, connection,amount);
+
       // create the transaction
       const transaction = new Transaction();
       transaction.add(tokenTransferIx);
@@ -103,34 +95,6 @@ app.post('/api/merchant',async(request,response)=>{
  }
  finally {
   console.log('reference:',referencePublic);
-  const interval = setInterval(async () => {
-    console.count('Checking for transaction...');
-    try {
-      signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-      console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-      if (signatureInfo.signature) {
-          //   // Create an object with the data you want to send
-        //   const postData = {
-        //     user_email:userSender,
-        //     amount: sendAmount,
-        //     transaction_id: signatureInfo.signature,
-        //     token: tokenApi
-        //   };
-          
-        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-        //   const agent = new https.Agent({ rejectUnauthorized: false });
-        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-        //   // Handle the response from the server
-        //   console.log(apiResponse.data);
-           clearInterval(interval);
-      }
-  } catch (error) {
-        if (!(error instanceof FindReferenceError)) {
-            console.error(error);
-            clearInterval(interval);
-        }
-    }
-  }, 30000);
 }
 });
 
@@ -183,7 +147,7 @@ async function createTokenTransferIx(sender,connection,amount){
     // Create a reference that is unique to each checkout session
     // const references = [new Keypair().publicKey];
       referencePublic = new Keypair().publicKey;
-     const references = [referencePublic];
+     const references = [referencePublic,sender];
 
 
     // add references to the instruction
@@ -268,3 +232,39 @@ app.get('/api/confirm-transaction',async(req,res)=>{
     'status' : confirmed ? 200: 500 ,
    });
 });
+
+
+app.get('/api/check/:reference', function (req, res) {
+  let referencePublic=req.params.reference;
+
+  const interval = setInterval(async () => {
+    console.count('Checking for transaction...');
+    try {
+      signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+      if (signatureInfo) {
+         console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+
+        //     // Create an object with the data you want to send
+        //   const postData = {
+        //     user_email:userSender,
+        //     amount: sendAmount,
+        //     transaction_id: signatureInfo.signature,
+        //     token: tokenApi
+        //   };
+          
+        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+        //   const agent = new https.Agent({ rejectUnauthorized: false });
+        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+        //   // Handle the response from the server
+        //   console.log(apiResponse.data);
+           clearInterval(interval);
+      }
+  } catch (error) {
+        if (!(error instanceof FindReferenceError)) {
+            console.error(error);
+            clearInterval(interval);
+        }
+    }
+  }, 30000);
+ 
+})
