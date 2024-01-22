@@ -268,18 +268,18 @@ app.post('/api/check', async function(req, res) {
 });
   console.log('Additional code after signatureInfo is found:', signature);
 
-//  // Create an object with the data you want to send
-//   const postData = {
-//     user_email:userSender,
-//     amount: 1,
-//     transaction_id: signatureInfo.signature,
-//     token: tokenApi
-//   };
+ // Create an object with the data you want to send
+  const postData = {
+    user_email: 'markc@cayc.io',
+    amount: 1,
+    transaction_id: signature,
+    token: tokenApi
+  };
 
-//   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-//   const agent = new https.Agent({ rejectUnauthorized: false });
-//   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-//   // Handle the response from the server
-//   console.log(apiResponse.data);
+  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+  const agent = new https.Agent({ rejectUnauthorized: false });
+  const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+  // Handle the response from the server
+  console.log(apiResponse.data);
  
 })
