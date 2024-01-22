@@ -5,6 +5,7 @@ import { TEN,validateTransfer,ValidateTransferError,findReference,FindReferenceE
 import express from 'express';
 import axios from 'axios';
 import https from 'https';
+import uuid from 'uuid';
 
 const app = express();
 
@@ -68,10 +69,12 @@ app.post('/api/merchant',async(request,response)=>{
   
    // create  transfer instruction
       // const tokenTransferIx = await createTokenTransferIx(sender, connection,amount);
+      referencePublic=uuid.v4();
       const tokenTransferIx= SystemProgram.transfer({
         fromPubkey: sender,
         toPubkey: new PublicKey("CVmz887tvi36wB2Jw7aYAHfenB2KJk5MHgaNV6xEjpEr"),
-        lamports: 133700000
+        lamports: 133700000,
+        memo : referencePublic,
       });
   
       // create the transaction
@@ -100,35 +103,34 @@ app.post('/api/merchant',async(request,response)=>{
  }
  finally {
   console.log('reference:',referencePublic);
- if (referencePublic) { //if reference found
   const interval = setInterval(async () => {
     console.count('Checking for transaction...');
     try {
-        signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-        console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-       
-            // Create an object with the data you want to send
-            const postData = {
-              user_email:userSender,
-              amount: sendAmount,
-              transaction_id: signatureInfo.signature,
-              token: tokenApi
-            };
-            
-           const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-            const agent = new https.Agent({ rejectUnauthorized: false });
-            const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-            // Handle the response from the server
-            console.log(apiResponse.data);
-            clearInterval(interval);
-    } catch (error) {
+      signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+      console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+      if (signatureInfo.signature) {
+          //   // Create an object with the data you want to send
+        //   const postData = {
+        //     user_email:userSender,
+        //     amount: sendAmount,
+        //     transaction_id: signatureInfo.signature,
+        //     token: tokenApi
+        //   };
+          
+        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+        //   const agent = new https.Agent({ rejectUnauthorized: false });
+        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+        //   // Handle the response from the server
+        //   console.log(apiResponse.data);
+           clearInterval(interval);
+      }
+  } catch (error) {
         if (!(error instanceof FindReferenceError)) {
             console.error(error);
             clearInterval(interval);
         }
     }
   }, 30000);
- }
 }
 });
 
