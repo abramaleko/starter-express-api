@@ -235,7 +235,7 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 
 
 app.post('/api/check', async function (req, res) {
-  let referencePublic=req.query;
+  const {referencePublic}=req.query;
   console.log(referencePublic);
 
   const interval = setInterval(async () => {
