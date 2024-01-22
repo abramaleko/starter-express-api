@@ -234,8 +234,9 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 });
 
 
-app.get('/api/check/:reference', async function (req, res) {
-  let referencePublic=req.params.reference;
+app.post('/api/check', async function (req, res) {
+  let referencePublic=req.query;
+  console.log(referencePublic);
 
   const interval = setInterval(async () => {
     console.count('Checking for transaction...');
