@@ -5,7 +5,7 @@ import { TEN,validateTransfer,ValidateTransferError,findReference,FindReferenceE
 import express from 'express';
 import axios from 'axios';
 import https from 'https';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 
@@ -69,7 +69,7 @@ app.post('/api/merchant',async(request,response)=>{
   
    // create  transfer instruction
       // const tokenTransferIx = await createTokenTransferIx(sender, connection,amount);
-      referencePublic=uuid.v4();
+      referencePublic=uuidv4();;
       const tokenTransferIx= SystemProgram.transfer({
         fromPubkey: sender,
         toPubkey: new PublicKey("CVmz887tvi36wB2Jw7aYAHfenB2KJk5MHgaNV6xEjpEr"),
