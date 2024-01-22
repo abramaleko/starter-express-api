@@ -89,6 +89,8 @@ app.post('/api/merchant',async(request,response)=>{
         response.status(200).send({ transaction: base64Transaction, message });
 
         console.log('reference:',referencePublic);
+        const publicKeyString = referencePublic.toBase58();
+       console.log('Extracted public key string:', publicKeyString);
 
         const { signature } = await new Promise((resolve, reject) => {
           /**
