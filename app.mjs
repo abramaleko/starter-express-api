@@ -235,8 +235,8 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 
 
 app.post('/api/check', async function(req, res) {
-  const {referencePublic}=req.query;
-  referencePublic=new PublicKey(referencePublic);
+  // const {referencePublic}=req.query;
+  referencePublic= new PublicKey('HevarqDsygFqzg73osGxG2QK2P7rdV96cmqkE9TzsyYN');
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
