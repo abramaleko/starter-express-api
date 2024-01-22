@@ -89,10 +89,10 @@ app.post('/api/merchant',async(request,response)=>{
         response.status(200).send({ transaction: base64Transaction, message });
 
         console.log('reference:',referencePublic);
-        const publicKeyString = referencePublic.toBase58();
-       console.log('Extracted public key string:', publicKeyString);
 
         const { signature } = await new Promise((resolve, reject) => {
+          const publicKeyString = referencePublic.toBase58();
+          const pubRef= new PublicKey(publicKeyString);
           /**
            * Retry until we find the transaction
            *
@@ -107,7 +107,7 @@ app.post('/api/merchant',async(request,response)=>{
           const interval = setInterval(async () => {
               console.count('Checking for transaction...');
               try {
-                  signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+                  signatureInfo = await findReference(connection, pubRef, { finality: 'confirmed' });
                   console.log('\n 🖌  Signature found: ', signatureInfo.signature);
                   clearInterval(interval);
                   resolve(signatureInfo);
