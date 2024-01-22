@@ -256,7 +256,7 @@ app.post('/api/check', async function(req, res) {
             signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
-            resolve(signature);
+            resolve(signatureInfo);
         } catch (error) {
             if (!(error instanceof FindReferenceError)) {
                 console.error(error);
