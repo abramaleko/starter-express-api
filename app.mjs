@@ -86,7 +86,7 @@ app.post('/api/merchant',async(request,response)=>{
   
         const message = 'Your swaping tokens for your in-game points';
   
-        response.status(200).send({ transaction: base64Transaction, message });
+        response.status(200).send({ transaction: base64Transaction, message }).then(async () => {
 
         console.log('reference:',referencePublic);
 
@@ -135,12 +135,13 @@ app.post('/api/merchant',async(request,response)=>{
         const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
         // Handle the response from the server
         console.log(apiResponse.data);
-  
+        });  
  } catch (error) {
   // Log the error details for debugging
   console.error('An error occurred during the API request:', error.message);
   console.error('Error stack trace:', error.stack);
  }
+ 
 });
 
 
