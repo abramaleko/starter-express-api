@@ -234,38 +234,37 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 });
 
 
-app.post('/api/check', async function (req, res) {
+app.post('/api/check', async function(req, res) {
   const {referencePublic}=req.query;
   console.log(referencePublic);
 
-  const interval = setInterval(async () => {
-    console.count('Checking for transaction...');
-    try {
-      signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-      if (signatureInfo) {
-         console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-
-        //     // Create an object with the data you want to send
-        //   const postData = {
-        //     user_email:userSender,
-        //     amount: sendAmount,
-        //     transaction_id: signatureInfo.signature,
-        //     token: tokenApi
-        //   };
-          
-        //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-        //   const agent = new https.Agent({ rejectUnauthorized: false });
-        //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-        //   // Handle the response from the server
-        //   console.log(apiResponse.data);
-           clearInterval(interval);
-      }
-  } catch (error) {
-        if (!(error instanceof FindReferenceError)) {
-            console.error(error);
+  const { signature } = await new Promise((resolve, reject) => {
+    /**
+     * Retry until we find the transaction
+     *
+     * If a transaction with the given reference can't be found, the `findTransactionSignature`
+     * function will throw an error. There are a few reasons why this could be a false negative:
+     *
+     * - Transaction is not yet confirmed
+     * - Customer is yet to approve/complete the transaction
+     *
+     * You can implement a polling strategy to query for the transaction periodically.
+     */
+    const interval = setInterval(async () => {
+        console.count('Checking for transaction...');
+        try {
+            signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+            console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
+            resolve(signatureInfo);
+        } catch (error) {
+            if (!(error instanceof FindReferenceError)) {
+                console.error(error);
+                clearInterval(interval);
+                reject(error);
+            }
         }
-    }
-  }, 30000);
+    }, 250);
+});
  
 })
