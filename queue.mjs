@@ -1,8 +1,11 @@
 import Queue from 'bee-queue';
 import axios from 'axios';
+import MemoryAdapter from 'bull-memory-adapter';
 
-const myQueue = new Queue('myQueue');
 
+const myQueue = new Queue('myQueue', {
+  redis: false, // Disable Redis connection
+});
 myQueue.process(async (job) => {
   try {
     const { referencePublic, amount, userSender } = job.data;
