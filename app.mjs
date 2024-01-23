@@ -105,7 +105,7 @@ async function getTransferSignature(referencePublic){
     const publicKeyString = referencePublic.toBase58();
     const pubRef= new PublicKey(publicKeyString);
     console.log(pubRef);
-
+   const mainNetConn=new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
     /**
      * Retry until we find the transaction
      *
@@ -120,7 +120,7 @@ async function getTransferSignature(referencePublic){
     const interval = setInterval(async () => {
         console.count('Checking for transaction...');
         try {
-            signatureInfo = await findReference(connection, pubRef, { finality: 'confirmed' });
+            signatureInfo = await findReference(mainNetConn, pubRef, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
             resolve(signatureInfo);
