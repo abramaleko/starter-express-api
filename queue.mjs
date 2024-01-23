@@ -1,5 +1,5 @@
-const Queue = require('bee-queue');
-const axios = require('axios');
+import Queue from 'bee-queue';
+import axios from 'axios';
 
 const myQueue = new Queue('myQueue');
 
@@ -10,9 +10,9 @@ myQueue.process(async (job) => {
     // Example POST API call with Axios, passing data as query parameters
     const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
     const queryParams = {
-        reference:referencePublic,
-        amount,
-        sender:userSender,
+      reference: referencePublic,
+      amount,
+      sender: userSender,
     };
 
     const response = await axios.post(apiUrl, null, {
@@ -28,4 +28,4 @@ myQueue.process(async (job) => {
   }
 });
 
-module.exports = myQueue;
+export default myQueue;
