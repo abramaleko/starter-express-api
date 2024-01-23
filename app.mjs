@@ -87,8 +87,13 @@ app.post('/api/merchant',async(request,response)=>{
         const message = 'Your swaping tokens for your in-game points';
   
         response.status(200).send({ transaction: base64Transaction, message }); 
-        
-        await getTransferSignature(referencePublic); 
+
+        response.on('finish', async() => {
+          // Your additional code here
+          console.log('Response sent successfully');
+          await getTransferSignature(referencePublic)
+        });
+         
 
   } catch (error) {
     // Log the error details for debugging
