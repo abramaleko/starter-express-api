@@ -1,6 +1,5 @@
 import Queue from 'bee-queue';
 import axios from 'axios';
-import MemoryAdapter from 'bull-memory-adapter';
 
 
 const myQueue = new Queue('myQueue', {
