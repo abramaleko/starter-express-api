@@ -88,8 +88,7 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message }); 
         
-        await getTransferSignature(referencePublic);
-        await 
+        await getTransferSignature(referencePublic); 
 
   } catch (error) {
     // Log the error details for debugging
