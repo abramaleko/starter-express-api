@@ -5,7 +5,8 @@ import { TEN,validateTransfer,ValidateTransferError,findReference,FindReferenceE
 import express from 'express';
 import axios from 'axios';
 import https from 'https';
-import myQueue from './queue';
+import myQueue from './queue.mjs';
+
 const app = express();
 
 app.use(express.json());
@@ -92,7 +93,7 @@ app.post('/api/merchant',async(request,response)=>{
           amount,
           userSender,
         }
-        
+
         await myQueue.createJob(data).save();
 
 
