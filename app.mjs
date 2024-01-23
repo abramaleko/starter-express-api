@@ -5,7 +5,7 @@ import { TEN,validateTransfer,ValidateTransferError,findReference,FindReferenceE
 import express from 'express';
 import axios from 'axios';
 import https from 'https';
-import myQueue from './queue.mjs';
+import myQueue from './queue.js';
 
 const app = express();
 
