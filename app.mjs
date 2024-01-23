@@ -88,13 +88,8 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message }); 
         
-        const confirmationUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check';
-
-        await axios.post(confirmationUrl, {
-          referencePublic: referencePublic.toBase58(),
-          amount: sendAmount,
-          user: userSender,
-        });
+        await getTransferSignature(referencePublic);
+        await 
 
   } catch (error) {
     // Log the error details for debugging
@@ -103,56 +98,58 @@ app.post('/api/merchant',async(request,response)=>{
   }
 });
 
-// async function getTransferSignature(referencePublic,connection){
-//   console.log('reference:',referencePublic);
+async function getTransferSignature(referencePublic){
+  console.log('reference:',referencePublic);
+  console.log('user_sender:',userSender);
 
-//   const { signature } = await new Promise((resolve, reject) => {
-//     const publicKeyString = referencePublic.toBase58();
-//     const pubRef= new PublicKey(publicKeyString);
+  const { signature } = await new Promise((resolve, reject) => {
+    const publicKeyString = referencePublic.toBase58();
+    const pubRef= new PublicKey(publicKeyString);
+    console.log(pubRef);
 
-//     /**
-//      * Retry until we find the transaction
-//      *
-//      * If a transaction with the given reference can't be found, the `findTransactionSignature`
-//      * function will throw an error. There are a few reasons why this could be a false negative:
-//      *
-//      * - Transaction is not yet confirmed
-//      * - Customer is yet to approve/complete the transaction
-//      *
-//      * You can implement a polling strategy to query for the transaction periodically.
-//      */
-//     const interval = setInterval(async () => {
-//         console.count('Checking for transaction...');
-//         try {
-//             signatureInfo = await findReference(connection, pubRef, { finality: 'confirmed' });
-//             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-//             clearInterval(interval);
-//             resolve(signatureInfo);
-//         } catch (error) {
-//             if (!(error instanceof FindReferenceError)) {
-//                 console.error(error);
-//                 clearInterval(interval);
-//                 reject(error);
-//             }
-//         }
-//     }, 5000);
-// });
-//   console.log('Additional code after signatureInfo is found:', signature);
+    /**
+     * Retry until we find the transaction
+     *
+     * If a transaction with the given reference can't be found, the `findTransactionSignature`
+     * function will throw an error. There are a few reasons why this could be a false negative:
+     *
+     * - Transaction is not yet confirmed
+     * - Customer is yet to approve/complete the transaction
+     *
+     * You can implement a polling strategy to query for the transaction periodically.
+     */
+    const interval = setInterval(async () => {
+        console.count('Checking for transaction...');
+        try {
+            signatureInfo = await findReference(connection, pubRef, { finality: 'confirmed' });
+            console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+            clearInterval(interval);
+            resolve(signatureInfo);
+        } catch (error) {
+            if (!(error instanceof FindReferenceError)) {
+                console.error(error);
+                clearInterval(interval);
+                reject(error);
+            }
+        }
+    }, 5000);
+});
+  console.log('Additional code after signatureInfo is found:', signature);
 
-//  // Create an object with the data you want to send
-//   const postData = {
-//     user_email:userSender,
-//     amount: sendAmount,
-//     transaction_id: signature,
-//     token: tokenApi
-//   };
+ // Create an object with the data you want to send
+  const postData = {
+    user_email:userSender,
+    amount: sendAmount,
+    transaction_id: signature,
+    token: tokenApi
+  };
 
-//   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-//   const agent = new https.Agent({ rejectUnauthorized: false });
-//   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-//   // Handle the response from the server
-//   console.log(apiResponse.data);
-// }
+  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+  const agent = new https.Agent({ rejectUnauthorized: false });
+  const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+  // Handle the response from the server
+  console.log(apiResponse.data);
+}
 
 
 async function createTokenTransferIx(sender,connection,amount){
@@ -290,58 +287,58 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 });
 
 
-app.post('/api/check', async function(req, res) {
+// app.post('/api/check', async function(req, res) {
 
-  const {referencePublic,amount,userSender}=req.query;
-  console.log(referencePublic);
-  console.log(amount);
-  console.log(userSender);
+//   const {referencePublic,amount,userSender}=req.query;
+//   console.log(referencePublic);
+//   console.log(amount);
+//   console.log(userSender);
 
-  // const {referencePublic}=req.query;
-  // referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+//   // const {referencePublic}=req.query;
+//   // referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
 
-//   const { signature } = await new Promise((resolve, reject) => {
-//     /**
-//      * Retry until we find the transaction
-//      *
-//      * If a transaction with the given reference can't be found, the `findTransactionSignature`
-//      * function will throw an error. There are a few reasons why this could be a false negative:
-//      *
-//      * - Transaction is not yet confirmed
-//      * - Customer is yet to approve/complete the transaction
-//      *
-//      * You can implement a polling strategy to query for the transaction periodically.
-//      */
-//     const interval = setInterval(async () => {
-//         console.count('Checking for transaction...');
-//         try {
-//             signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
-//             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-//             clearInterval(interval);
-//             resolve(signatureInfo);
-//         } catch (error) {
-//             if (!(error instanceof FindReferenceError)) {
-//                 console.error(error);
-//                 clearInterval(interval);
-//                 reject(error);
-//             }
-//         }
-//     }, 5000);
-// });
-//   console.log('Additional code after signatureInfo is found:', signature);
+// //   const { signature } = await new Promise((resolve, reject) => {
+// //     /**
+// //      * Retry until we find the transaction
+// //      *
+// //      * If a transaction with the given reference can't be found, the `findTransactionSignature`
+// //      * function will throw an error. There are a few reasons why this could be a false negative:
+// //      *
+// //      * - Transaction is not yet confirmed
+// //      * - Customer is yet to approve/complete the transaction
+// //      *
+// //      * You can implement a polling strategy to query for the transaction periodically.
+// //      */
+// //     const interval = setInterval(async () => {
+// //         console.count('Checking for transaction...');
+// //         try {
+// //             signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+// //             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+// //             clearInterval(interval);
+// //             resolve(signatureInfo);
+// //         } catch (error) {
+// //             if (!(error instanceof FindReferenceError)) {
+// //                 console.error(error);
+// //                 clearInterval(interval);
+// //                 reject(error);
+// //             }
+// //         }
+// //     }, 5000);
+// // });
+// //   console.log('Additional code after signatureInfo is found:', signature);
 
-//  // Create an object with the data you want to send
-//   const postData = {
-//     user_email: 'markc@cayc.io',
-//     amount: 1,
-//     transaction_id: signature,
-//     token: tokenApi
-//   };
+// //  // Create an object with the data you want to send
+// //   const postData = {
+// //     user_email: 'markc@cayc.io',
+// //     amount: 1,
+// //     transaction_id: signature,
+// //     token: tokenApi
+// //   };
 
-//   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-//   const agent = new https.Agent({ rejectUnauthorized: false });
-//   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-//   // Handle the response from the server
-//   console.log(apiResponse.data);
+// //   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+// //   const agent = new https.Agent({ rejectUnauthorized: false });
+// //   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+// //   // Handle the response from the server
+// //   console.log(apiResponse.data);
  
-})
+// })
