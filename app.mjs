@@ -119,18 +119,18 @@ async function getTransferSignature(referencePublic){
      */
     const interval = setInterval(async () => {
         console.count('Checking for transaction...');
-        try {
+        // try {
             signatureInfo = await findReference(mainNetConn, pubRef, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
             resolve(signatureInfo);
-        } catch (error) {
-            if (!(error instanceof FindReferenceError)) {
-                console.error(error);
-                clearInterval(interval);
-                reject(error);
-            }
-        }
+        // } catch (error) {
+        //     if (!(error instanceof FindReferenceError)) {
+        //         console.error(error);
+        //         clearInterval(interval);
+        //         reject(error);
+        //     }
+        // }
     }, 5000);
 });
   console.log('Additional code after signatureInfo is found:', signature);
