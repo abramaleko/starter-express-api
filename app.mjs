@@ -295,14 +295,16 @@ app.post('/api/check', async function(req, res) {
     },30000);
 });
 
-  signature.then(
-    function(value){
-      console.log('Additional code after signatureInfo is found:', value);
-    },
-    function(error){
-      console.error('Error', error);
-    }
-  );
+console.log('Additional code after signatureInfo is found:', signature);
+
+  // signature.then(
+  //   function(value){
+  //     console.log('Additional code after signatureInfo is found:', value);
+  //   },
+  //   function(error){
+  //     console.error('Error', error);
+  //   }
+  // );
 
 //  // Create an object with the data you want to send
 //   const postData = {
