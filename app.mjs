@@ -126,15 +126,16 @@ async function getTransferSignature(){
      */
     let intervalCount = 0;
 
-    const interval = setInterval( () => {
+    const interval = setInterval( async() => {
         console.log('Checking for transaction...');
   
-        intervalCount++;
+       await intervalCount++;
         if (intervalCount == 3) {
           clearInterval(interval);
           console.log('Interval stopped after 3 runs');
         }
     }, 5000);
+    
     console.log(intervalCount);
 }
 
