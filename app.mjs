@@ -101,7 +101,7 @@ app.post('/api/merchant',async(request,response)=>{
 
   async function getTransferSignature(){
   
-  referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+  const referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
   console.log(referencePub);
 
     const  signature  = new Promise((resolve, reject) => {
@@ -285,8 +285,7 @@ app.post('/api/check', async function(req, res) {
   console.log(amount);
   console.log(sender);
 
-  const {referencePublic}=req.query;
-  referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+ const referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
