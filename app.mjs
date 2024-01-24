@@ -292,7 +292,7 @@ app.post('/api/check', async function(req, res) {
                 reject(error);
             }
         }
-    },30000);
+    },5000);
 });
 
 console.log('Additional code after signatureInfo is found:', signature);
