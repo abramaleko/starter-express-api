@@ -91,15 +91,13 @@ app.post('/api/merchant',async(request,response)=>{
         // Call the function after response.send
         const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
 
-        const queryParams = {
+        const data = {
           reference: referencePublic.toBase58(),
           amount,
           sender: userSender,
         };
 
-        const verify = await axios.post(apiUrl, null, {
-          params: queryParams,
-        });
+        const verify = await axios.post(apiUrl,data);
 
         console.log('API call response:', verify.data);
 
@@ -248,7 +246,7 @@ app.get('/api/confirm-transaction',async(req,res)=>{
 
 app.post('/api/check', async function(req, res) {
 
-  const {reference,amount,sender}=req.query;
+  const {reference,amount,sender}=req.body;
   console.log(reference);
   console.log(amount);
   console.log(sender);
