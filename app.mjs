@@ -103,7 +103,7 @@ app.post('/api/merchant',async(request,response)=>{
   
   referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
 
-    const { signature } = new Promise((resolve, reject) => {
+    const  signature  = new Promise((resolve, reject) => {
       /**
        * Retry until we find the transaction
        *
