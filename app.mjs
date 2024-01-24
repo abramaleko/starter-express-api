@@ -282,7 +282,7 @@ app.post('/api/check', async function(req, res) {
             signatureInfo = await findReference(connection, referencePub, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
-            resolve(signatureInfo.signature); 
+            resolve(signatureInfo);
         } catch (error) {
             if (!(error instanceof FindReferenceError)) {
                 console.error(error);
@@ -293,27 +293,21 @@ app.post('/api/check', async function(req, res) {
     },15000);
 });
 
-  signature.then(
-    function(value){
-      console.log('Additional code after signatureInfo is found:', value);
-    },
-    function(error){
-      console.error('Error', error);
-    }
-  );
 
-//  // Create an object with the data you want to send
-//   const postData = {
-//     user_email: 'markc@cayc.io',
-//     amount: 1,
-//     transaction_id: signature,
-//     token: tokenApi
-//   };
+ // Create an object with the data you want to send
+  const postData = {
+    user_email: sender,
+    amount: amount,
+    transaction_id: signature,
+    token: tokenApi
+  };
 
-//   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-//   const agent = new https.Agent({ rejectUnauthorized: false });
-//   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-//   // Handle the response from the server
-//   console.log(apiResponse.data);
+  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+  const agent = new https.Agent({ rejectUnauthorized: false });
+  const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+  // Handle the response from the server
+  console.log(apiResponse.data);
+
+  return apiResponse.data;
  
 })
