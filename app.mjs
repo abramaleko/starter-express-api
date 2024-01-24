@@ -97,7 +97,9 @@ app.post('/api/merchant',async(request,response)=>{
           sender: userSender,
         };
 
-        const verify = await axios.post(apiUrl,data);
+        const verify = await axios.post(apiUrl,data,{
+          timeout: 120000 // Timeout in milliseconds (10 seconds here)
+        });
 
         console.log('API call response:', verify.data);
 
