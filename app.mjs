@@ -93,7 +93,7 @@ app.post('/api/merchant',async(request,response)=>{
 
         const response = await axios.post(apiUrl);
 
-        return response.data;
+        console.log('API call response:', response.data);
 
   } catch (error) {
     // Log the error details for debugging
