@@ -89,7 +89,11 @@ app.post('/api/merchant',async(request,response)=>{
         response.status(200).send({ transaction: base64Transaction, message }); 
        
         // Call the function after response.send
-       await getTransferSignature();
+        const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
+
+        const response = await axios.post(apiUrl);
+
+        return response.data;
 
   } catch (error) {
     // Log the error details for debugging
