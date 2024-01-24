@@ -91,9 +91,9 @@ app.post('/api/merchant',async(request,response)=>{
         // Call the function after response.send
         const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
 
-        const response = await axios.post(apiUrl);
+        const verify = await axios.post(apiUrl);
 
-        console.log('API call response:', response.data);
+        console.log('API call response:', verify.data);
 
   } catch (error) {
     // Log the error details for debugging
