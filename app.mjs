@@ -111,6 +111,7 @@ async function getTransferSignature(){
   const { signature } = await new Promise((resolve, reject) => {
     const publicKeyString = referencePublic.toBase58();
     const pubRef= new PublicKey(publicKeyString);
+    console.log(pubRef);
 
     /**
      * Retry until we find the transaction
