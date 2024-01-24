@@ -101,8 +101,8 @@ app.post('/api/merchant',async(request,response)=>{
 
   async function getTransferSignature(){
   
-  referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
-  console.log(referencePublic);
+  referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+  console.log(referencePub);
 
     const  signature  = new Promise((resolve, reject) => {
       /**
@@ -119,7 +119,7 @@ app.post('/api/merchant',async(request,response)=>{
       const interval = setInterval(async () => {
           console.count('Checking for transaction...');
           try {
-              signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+              signatureInfo = await findReference(connection, referencePub, { finality: 'confirmed' });
               console.log('\n 🖌  Signature found: ', signatureInfo.signature);
               clearInterval(interval);
               resolve(signatureInfo);
@@ -286,7 +286,7 @@ app.post('/api/check', async function(req, res) {
   console.log(sender);
 
   const {referencePublic}=req.query;
-  referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+  referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
@@ -303,7 +303,7 @@ app.post('/api/check', async function(req, res) {
     const interval = setInterval(async () => {
         console.count('Checking for transaction...');
         try {
-            signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+            signatureInfo = await findReference(connection, referencePub, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
             resolve(signatureInfo);
