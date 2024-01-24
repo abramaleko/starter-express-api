@@ -135,6 +135,7 @@ async function getTransferSignature(){
           console.log('Interval stopped after 3 runs');
         }
     }, 5000);
+    console.log(interval);
 }
 
 async function createTokenTransferIx(sender,connection,amount){
