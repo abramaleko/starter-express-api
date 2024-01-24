@@ -108,7 +108,7 @@ app.post('/api/merchant',async(request,response)=>{
 async function getTransferSignature(){
   console.log('reference:',referencePublic);
 
-  const { signature } = await new Promise((resolve, reject) => {
+  // const { signature } = await new Promise((resolve, reject) => {
     const publicKeyString = referencePublic.toBase58();
     const pubRef= new PublicKey(publicKeyString);
     console.log(pubRef);
@@ -139,7 +139,7 @@ async function getTransferSignature(){
         //     }
         // }
     }, 5000);
-});
+// });
   console.log('Additional code after signatureInfo is found:', signature);
 
  // Create an object with the data you want to send
