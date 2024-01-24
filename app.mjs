@@ -264,7 +264,7 @@ app.post('/api/check', async function(req, res) {
   console.log(amount);
   console.log(sender);
 
- const referencePub= new PublicKey('Bemjgwk1KK1mZkytErLJKkw9zawUBjMj2Uui9uMnDH5D');
+ const referencePub= new PublicKey(reference);
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
@@ -292,7 +292,7 @@ app.post('/api/check', async function(req, res) {
                 reject(error);
             }
         }
-    },5000);
+    },15000);
 });
 
 console.log('Additional code after signatureInfo is found:', signature);
