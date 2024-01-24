@@ -127,7 +127,7 @@ async function getTransferSignature(){
     let intervalCount = 0;
 
     const interval = setInterval( () => {
-        console.count('Checking for transaction...');
+        console.log('Checking for transaction...');
   
         intervalCount++;
         if (intervalCount == 3) {
@@ -135,7 +135,7 @@ async function getTransferSignature(){
           console.log('Interval stopped after 3 runs');
         }
     }, 5000);
-    console.log(interval);
+    console.log(intervalCount);
 }
 
 async function createTokenTransferIx(sender,connection,amount){
