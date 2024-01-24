@@ -112,8 +112,6 @@ app.post('/api/merchant',async(request,response)=>{
           }
         });
   
-        console.log('API call response:', verify.data);
-
   } catch (error) {
     // Log the error details for debugging
     console.error('An error occurred during the API request:', error.message);
@@ -295,16 +293,14 @@ app.post('/api/check', async function(req, res) {
     },15000);
 });
 
-console.log('Additional code after signatureInfo is found:', signature);
-
-  // signature.then(
-  //   function(value){
-  //     console.log('Additional code after signatureInfo is found:', value);
-  //   },
-  //   function(error){
-  //     console.error('Error', error);
-  //   }
-  // );
+  signature.then(
+    function(value){
+      console.log('Additional code after signatureInfo is found:', value);
+    },
+    function(error){
+      console.error('Error', error);
+    }
+  );
 
 //  // Create an object with the data you want to send
 //   const postData = {
