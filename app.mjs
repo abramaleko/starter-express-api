@@ -91,14 +91,10 @@ app.post('/api/merchant',async(request,response)=>{
         // Call the function after response.send
         const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
 
-        const data = {
+        const verify = await axios.post(apiUrl,{
           reference: referencePublic.toBase58(),
           amount,
           sender: userSender,
-        };
-
-        const verify = await axios.post(apiUrl,data,{
-          timeout: 180000
         }).then(response => {
           // Handle successful response
           console.log('Success:',response);
