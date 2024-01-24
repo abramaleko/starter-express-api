@@ -88,14 +88,16 @@ app.post('/api/merchant',async(request,response)=>{
   
         response.status(200).send({ transaction: base64Transaction, message }); 
        
-        let data ={
-          referencePublic : referencePublic.toBase58(),
-          amount,
-          userSender,
-        }
-
-        // await myQueue.createJob(data).save();
-       await getTransferSignature();
+        // Call the function after response.send
+        getTransferSignature()
+        .then((result) => {
+          // Perform other actions after the promise is resolved
+          console.log('Promise resolved with result:', result);
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error('Error:', error);
+        });
 
   } catch (error) {
     // Log the error details for debugging
@@ -105,38 +107,40 @@ app.post('/api/merchant',async(request,response)=>{
 });
 
 
-async function getTransferSignature(){
+ function getTransferSignature(){
   console.log('reference:',referencePublic);
 
-  // const { signature } = await new Promise((resolve, reject) => {
-    const publicKeyString = referencePublic.toBase58();
-    const pubRef= new PublicKey(publicKeyString);
-    console.log(pubRef);
+  return new Promise((resolve, reject) => {
+    // Create a promise for the signature
+    const signaturePromise = new Promise((innerResolve, innerReject) => {
+      // Set interval function running every 5 seconds
+      const intervalId = setInterval(async () => {
+        try {
+          // Call the function that returns a promise (findReference)
+          const signature = await findReference(connection, referencePublic, { finality: 'confirmed' });
 
-    /**
-     * Retry until we find the transaction
-     *
-     * If a transaction with the given reference can't be found, the `findTransactionSignature`
-     * function will throw an error. There are a few reasons why this could be a false negative:
-     *
-     * - Transaction is not yet confirmed
-     * - Customer is yet to approve/complete the transaction
-     *
-     * You can implement a polling strategy to query for the transaction periodically.
-     */
-    let intervalCount = 0;
-
-    const interval = setInterval( async() => {
-        console.log('Checking for transaction...');
-  
-       await intervalCount++;
-        if (intervalCount == 3) {
-          clearInterval(interval);
-          console.log('Interval stopped after 3 runs');
+          // If the signature is found, stop the interval and resolve the outer promise
+          clearInterval(intervalId);
+          innerResolve(signature);
+        } catch (error) {
+          // Handle errors from findReference
+          console.error('Error in findReference:', error);
+          // You may choose to reject the outer promise if needed
+          // innerReject(error);
         }
-    }, 5000);
-    
-    console.log(intervalCount);
+      }, 5000);
+    });
+
+    // Handle the signature promise resolution
+    signaturePromise
+      .then((signature) => {
+        resolve(signature); // Resolve the outer promise with the signature
+      })
+      .catch((error) => {
+        reject(error); // Reject the outer promise if there's an error in the inner promise
+      });
+  });
+
 }
 
 async function createTokenTransferIx(sender,connection,amount){
