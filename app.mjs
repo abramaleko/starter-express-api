@@ -89,15 +89,7 @@ app.post('/api/merchant',async(request,response)=>{
         response.status(200).send({ transaction: base64Transaction, message }); 
        
         // Call the function after response.send
-        getTransferSignature()
-        .then((result) => {
-          // Perform other actions after the promise is resolved
-          console.log('Promise resolved with result:', result);
-        })
-        .catch((error) => {
-          // Handle errors
-          console.error('Error:', error);
-        });
+        getTransferSignature();
 
   } catch (error) {
     // Log the error details for debugging
@@ -107,41 +99,66 @@ app.post('/api/merchant',async(request,response)=>{
 });
 
 
- function getTransferSignature(){
-  console.log('reference:',referencePublic);
+  function getTransferSignature(){
+  
+  referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
 
-  return new Promise((resolve, reject) => {
-    // Create a promise for the signature
-    const signaturePromise = new Promise((innerResolve, innerReject) => {
-      // Set interval function running every 5 seconds
-      const intervalId = setInterval(async () => {
-        try {
-          // Call the function that returns a promise (findReference)
-          const signature = await findReference(connection, referencePublic, { finality: 'confirmed' });
-
-          // If the signature is found, stop the interval and resolve the outer promise
-          clearInterval(intervalId);
-          innerResolve(signature);
-        } catch (error) {
-          // Handle errors from findReference
-          console.error('Error in findReference:', error);
-          // You may choose to reject the outer promise if needed
-          // innerReject(error);
-        }
+    const { signature } = new Promise((resolve, reject) => {
+      /**
+       * Retry until we find the transaction
+       *
+       * If a transaction with the given reference can't be found, the `findTransactionSignature`
+       * function will throw an error. There are a few reasons why this could be a false negative:
+       *
+       * - Transaction is not yet confirmed
+       * - Customer is yet to approve/complete the transaction
+       *
+       * You can implement a polling strategy to query for the transaction periodically.
+       */
+      const interval = setInterval(async () => {
+          console.count('Checking for transaction...');
+          try {
+              signatureInfo = await findReference(connection, referencePublic, { finality: 'confirmed' });
+              console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+              clearInterval(interval);
+              resolve(signatureInfo);
+          } catch (error) {
+              if (!(error instanceof FindReferenceError)) {
+                  console.error(error);
+                  clearInterval(interval);
+                  reject(error);
+              }
+          }
       }, 5000);
-    });
-
-    // Handle the signature promise resolution
-    signaturePromise
-      .then((signature) => {
-        resolve(signature); // Resolve the outer promise with the signature
-      })
-      .catch((error) => {
-        reject(error); // Reject the outer promise if there's an error in the inner promise
-      });
   });
 
-}
+  signature.then(
+    function(value){
+      console.log('Signature',value);
+    },
+    function(error){
+      console.log('Error',error);
+    }
+  );
+
+
+  // console.log('Additional code after signatureInfo is found:', signature);
+  
+  // // Create an object with the data you want to send
+  //  const postData = {
+  //    user_email: 'markc@cayc.io',
+  //    amount: 1,
+  //    transaction_id: signature,
+  //    token: tokenApi
+  //  };
+ 
+  //  const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
+  //  const agent = new https.Agent({ rejectUnauthorized: false });
+  //  const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
+  //  // Handle the response from the server
+  //  console.log(apiResponse.data);
+  
+  }
 
 async function createTokenTransferIx(sender,connection,amount){
 
