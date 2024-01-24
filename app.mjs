@@ -264,7 +264,7 @@ app.post('/api/check', async function(req, res) {
   console.log(amount);
   console.log(sender);
 
- const referencePub= new PublicKey(reference);
+ const referencePub= new PublicKey('Bemjgwk1KK1mZkytErLJKkw9zawUBjMj2Uui9uMnDH5D');
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
