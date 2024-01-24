@@ -97,7 +97,9 @@ app.post('/api/merchant',async(request,response)=>{
           sender: userSender,
         };
 
-        const verify = await axios.post(apiUrl);
+        const response = await axios.post(apiUrl, null, {
+          params: queryParams,
+        });
 
         console.log('API call response:', verify.data);
 
