@@ -98,9 +98,24 @@ app.post('/api/merchant',async(request,response)=>{
         };
 
         const verify = await axios.post(apiUrl,data,{
-          timeout: 120000 // Timeout in milliseconds (10 seconds here)
+          timeout: 180000
+        }).then(response => {
+          // Handle successful response
+          console.log('Success:',response);
+        })
+        .catch(error => {
+          // Handle errors, including timeout-related errors
+          if (axios.isAxiosError(error)) {
+            if (error.code === 'ECONNABORTED') {
+              console.error('The request timed out');
+            } else {
+              console.error('Request failed with status code', error.response.status);
+            }
+          } else {
+            console.error('Unexpected error:', error.message);
+          }
         });
-
+  
         console.log('API call response:', verify.data);
 
   } catch (error) {
