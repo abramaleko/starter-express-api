@@ -128,40 +128,13 @@ async function getTransferSignature(){
 
     const interval = setInterval( () => {
         console.count('Checking for transaction...');
-        // try {
-        //     signatureInfo = await findReference(connection, pubRef, { finality: 'confirmed' });
-        //     console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-        //     clearInterval(interval);
-        //     resolve(signatureInfo);
-        // } catch (error) {
-        //     if (!(error instanceof FindReferenceError)) {
-        //         console.error(error);
-        //         clearInterval(interval);
-        //         reject(error);
-        //     }
-        // }
+  
         intervalCount++;
         if (intervalCount == 3) {
           clearInterval(interval);
           console.log('Interval stopped after 3 runs');
         }
     }, 5000);
-// });
-//   console.log('Additional code after signatureInfo is found:', signature);
-
-//  // Create an object with the data you want to send
-//   const postData = {
-//     user_email:userSender,
-//     amount: sendAmount,
-//     transaction_id: signature,
-//     token: tokenApi
-//   };
-
-//   const apiUrl = 'https://cayc.hopto.org:4450/api/record-swaps';
-//   const agent = new https.Agent({ rejectUnauthorized: false });
-//   const apiResponse = await axios.post(apiUrl, postData,{ httpsAgent: agent });
-//   // Handle the response from the server
-//   console.log(apiResponse.data);
 }
 
 async function createTokenTransferIx(sender,connection,amount){
