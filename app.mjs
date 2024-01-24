@@ -91,6 +91,12 @@ app.post('/api/merchant',async(request,response)=>{
         // Call the function after response.send
         const apiUrl = 'https://tough-pantsuit-dove.cyclic.app/api/check/';
 
+        const queryParams = {
+          reference: referencePublic.toBase58(),
+          amount,
+          sender: userSender,
+        };
+
         const verify = await axios.post(apiUrl);
 
         console.log('API call response:', verify.data);
@@ -102,50 +108,6 @@ app.post('/api/merchant',async(request,response)=>{
   }
 });
 
-
-  async function getTransferSignature(){
-  
-  const referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
-  console.log(referencePub);
-
-    const  signature  = new Promise((resolve, reject) => {
-      /**
-       * Retry until we find the transaction
-       *
-       * If a transaction with the given reference can't be found, the `findTransactionSignature`
-       * function will throw an error. There are a few reasons why this could be a false negative:
-       *
-       * - Transaction is not yet confirmed
-       * - Customer is yet to approve/complete the transaction
-       *
-       * You can implement a polling strategy to query for the transaction periodically.
-       */
-      const interval = setInterval(async () => {
-          console.count('Checking for transaction...');
-          try {
-              signatureInfo = await findReference(connection, referencePub, { finality: 'confirmed' });
-              console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-              clearInterval(interval);
-              resolve(signatureInfo);
-          } catch (error) {
-              if (!(error instanceof FindReferenceError)) {
-                  console.error(error);
-                  clearInterval(interval);
-                  reject(error);
-              }
-          }
-      }, 5000);
-  });
-
-  signature.then(
-    function(value){
-      console.log('Signature',value);
-    },
-    function(error){
-      console.log('Error',error);
-    }
-  );
-  }
 
 async function createTokenTransferIx(sender,connection,amount){
 
@@ -289,7 +251,7 @@ app.post('/api/check', async function(req, res) {
   console.log(amount);
   console.log(sender);
 
- const referencePub= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+ const referencePub= new PublicKey(reference);
 
   const { signature } = await new Promise((resolve, reject) => {
     /**
