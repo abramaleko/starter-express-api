@@ -89,7 +89,7 @@ app.post('/api/merchant',async(request,response)=>{
         response.status(200).send({ transaction: base64Transaction, message }); 
        
         // Call the function after response.send
-        getTransferSignature();
+       await getTransferSignature();
 
   } catch (error) {
     // Log the error details for debugging
@@ -99,9 +99,10 @@ app.post('/api/merchant',async(request,response)=>{
 });
 
 
-  function getTransferSignature(){
+  async function getTransferSignature(){
   
   referencePublic= new PublicKey('Dg3NhUkpJCUesHyhyAuFycRrXdpLDA3riLXBKWDedKGT');
+  console.log(referencePublic);
 
     const  signature  = new Promise((resolve, reject) => {
       /**
